@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mascota Rompecabezas — Ruta de Arte (Index 2)</title>
+<meta name="description" content="Escanea, descubre la obra y atrapa a la mascota rompecabezas 5 veces para ganar tu entrada.">
+<style>
+  :root{
+    --bg:#f6f6f3;
+    --ink:#0f0f0f;
+    --muted:#6e6e6e;
+    --accent:#0b6cff;
+    --card:#ffffff;
+    --shadow: 0 12px 28px rgba(0,0,0,.08);
+    --radius: 22px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--ink); font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans";
+    display:flex; align-items:center; justify-content:center; padding:24px;
+  }
+  .wrap{ width:min(1040px, 100%); display:grid; gap:26px; grid-template-columns: 1.2fr 1fr; }
+  @media (max-width: 980px){ .wrap{ grid-template-columns: 1fr; } }
+  .card{ background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:24px; }
+  .title{ font-size: clamp(24px, 3.2vw, 36px); letter-spacing:-.01em; margin:0 0 6px 0; }
+  .kicker{ color:var(--muted); font-size:14px; margin-bottom:16px }
+  .artframe{
+    background: #fbfbfb; border-radius:18px; border:1px solid #ececec; overflow:hidden;
+    display:flex; align-items:center; justify-content:center; aspect-ratio: 4 / 3;
+  }
+  .row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap }
+  .pill{ font-size:12px; padding:8px 12px; border-radius:999px; background:#eef3ff; color:#0b3a88; border:1px solid #d7e5ff; }
+  .muted{ color:var(--muted) }
+  .mascotCard{ position:relative; overflow:hidden }
+  .stage{
+    position:relative; aspect-ratio: 1 / 1; display:flex; align-items:center; justify-content:center;
+    background: radial-gradient(120% 100% at 50% 0%, #ffffff 0%, #f6f6f3 65%);
+    border:1px solid #eee; border-radius:18px;
+  }
+  .btnPrimary{ display:inline-flex; align-items:center; justify-content:center; padding:12px 16px; border-radius:14px; background:var(--ink); color:white; border:none; cursor:pointer; font-weight:600; box-shadow:var(--shadow); transition: transform .06s ease, opacity .2s ease; }
+  .btnPrimary:active{ transform: translateY(1px); opacity:.9 }
+  .cta{ background: linear-gradient(180deg, #121212, #1c1c1c); color:white; padding:18px; border-radius:16px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .cta p{ margin:0 }
+  .check{ display:inline-flex; align-items:center; gap:8px; color:#14771d; font-weight:600; font-size:14px; }
+  .check .dot{ width:10px; height:10px; border-radius:50%; background:#20c933 }
+  .footer{ font-size:12px; color:var(--muted); text-align:center; margin-top:12px }
+  .confetti{ position:absolute; inset:0; pointer-events:none; overflow:hidden }
+  .confetti span{ position:absolute; width:8px; height:14px; opacity:0; top:10%; animation: fall 1000ms ease-out forwards; }
+  @keyframes fall{ 0%{ transform: translateY(-20px) rotate(0deg); opacity:1 } 100%{ transform: translateY(420px) rotate(340deg); opacity:0 } }
+  .float{ animation: bob 2.6s ease-in-out infinite }
+  @keyframes bob{ 0%{ transform: translateY(0) } 50%{ transform: translateY(-8px) } 100%{ transform: translateY(0) } }
+  .blink > .eye{ transform-origin: center; animation: blink 5s infinite }
+  @keyframes blink{ 0%, 92%, 100%{ transform: scaleY(1) } 93%, 97%{ transform: scaleY(0.1) } }
+  .waveL{ transform-origin: 70px 180px; animation: wave 2.4s ease-in-out infinite }
+  .waveR{ transform-origin: 232px 180px; animation: wave 2.2s ease-in-out infinite reverse }
+  @keyframes wave{ 0%,100%{ transform: rotate(0deg) } 50%{ transform: rotate(10deg) } }
+  .cheeks .c{ opacity:.7 }
+
+  /* Paredes de museo a los lados */
+  body{
+    position: relative;
+    overflow-x: hidden;
+  }
+  body::before,
+  body::after{
+    content:"";
+    position: fixed;
+    top:0;
+    bottom:0;
+    width:140px;
+    background:
+      linear-gradient(to bottom, rgba(0,0,0,.10), transparent 70%),
+      radial-gradient(circle at 50px 90px, rgba(255,255,255,.7), transparent 60%),
+      #800080;
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,.10),
+      inset 0 0 40px rgba(0,0,0,.12);
+    z-index: 0;
+    pointer-events: none;
+  }
+  body::before{
+    left:0;
+    border-right:1px solid rgba(0,0,0,.12);
+  }
+  body::after{
+    right:0;
+    border-left:1px solid rgba(0,0,0,.12);
+  }
+  .wrap{
+    position: relative;
+    z-index: 1;
+  }
+  @media (max-width: 980px){
+    body::before,
+    body::after{
+      content:none;
+    }
+  }
+
+  /* Permitir scroll vertical en toda la página */
+  html, body{
+    height: auto;
+    min-height: 100%;
+  }
+  body{
+    display: block;
+    align-items: initial;
+    justify-content: initial;
+  }
+</style>
+</head>
+<body>
+  <main class="wrap">
+    <!-- IZQ: Obra e instrucciones -->
+    <section class="card">
+      <h1 class="title">Obra destacada</h1>
+      <p class="kicker">Minimalista, tierno y artístico — hecho para campus 🏫✨</p>
+      <div class="artframe" aria-label="Obra: El grito de Edvard Munch">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f4/The_Scream.jpg" alt="El grito" style="width:100%;height:auto;display:block;border-radius:18px;border:0;box-shadow:0 10px 30px rgba(0,0,0,.16)"/>
+      </div>
+
+      <div style="height:16px"></div>
+      <div class="row">
+        <span class="pill">Obra: <strong>“El grito”</strong></span>
+        <span class="pill">Artista: <strong>Edvard Munch</strong></span>
+        <span class="pill">Año: <strong>1893</strong></span>
+      </div>
+      <div style="height:14px"></div>
+      <p><strong>Dato curioso:</strong> Munch contó que la idea del cuadro nació al ver un atardecer con el cielo rojo sangre, que le hizo sentir que el cielo entero gritaba.</p>
+
+      <div style="height:16px"></div>
+      <div class="cta">
+        <p>🎁 <strong>Cómo jugar:</strong> Recorre la <strong>universidad</strong>, escanea los QR de los distintos puntos y <strong>atrápalos 5 veces</strong>. ¡Completa la colección y gana tu entrada a la exposición de arte!</p>
+        <button class="btnPrimary" id="btnInfo">Más detalles</button>
+      </div>
+    </section>
+
+    <!-- DER: Mascota / mini-juego con contador 0/5 -->
+    <section class="card mascotCard">
+      <h2 class="title" style="font-size:22px">Atrapa al muñequito rompecabezas</h2>
+      <p class="kicker">Toca/clic en la pieza. Necesitas 5 atrapadas.</p>
+      <div class="stage" id="stage">
+        <svg class="float blink" id="mascot" viewBox="0 0 300 300" width="78%" height="78%" role="img" aria-label="Pieza de rompecabezas con ojos, manos y mejillas sonrojadas">
+          <defs>
+            <filter id="shadow"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity=".16"/></filter>
+            <radialGradient id="bodyGrad" cx="50%" cy="35%" r="80%">
+              <stop offset="0%" stop-color="#ffffff"/>
+              <stop offset="100%" stop-color="#f2f2f2"/>
+            </radialGradient>
+          </defs>
+          <path d="M60,60 h120 a20,20 0 0 1 20,20 v28 a20,20 0 1 0 0,40 v32 a20,20 0 0 1 -20,20 h-34 a20,20 0 1 0 -40,0 h-46 a20,20 0 0 1 -20,-20 v-120 a20,20 0 0 1 20,-20 z"
+                fill="url(#bodyGrad)" stroke="#111" stroke-width="6" filter="url(#shadow)" />
+          <g class="eyes">
+            <ellipse class="eye" cx="120" cy="120" rx="9" ry="9" fill="#111"/>
+            <circle cx="117" cy="117" r="2" fill="#fff"/>
+            <ellipse class="eye" cx="165" cy="120" rx="9" ry="9" fill="#111"/>
+            <circle cx="162" cy="117" r="2" fill="#fff"/>
+          </g>
+          <g class="cheeks" opacity="0.9">
+            <circle class="c" cx="102" cy="144" r="6" fill="#ff8fab"/>
+            <circle class="c" cx="183" cy="144" r="6" fill="#ff8fab"/>
+          </g>
+          <path d="M120,150 q22,18 45,0" stroke="#111" stroke-width="6" fill="none" stroke-linecap="round"/>
+          <g class="waveL">
+            <path d="M55,160 q-26,10 -30,30" stroke="#111" stroke-width="6" fill="none" stroke-linecap="round"/>
+            <circle cx="23" cy="190" r="6" fill="#111"/>
+          </g>
+          <g class="waveR">
+            <path d="M220,160 q26,10 30,30" stroke="#111" stroke-width="6" fill="none" stroke-linecap="round"/>
+            <circle cx="252" cy="190" r="6" fill="#111"/>
+          </g>
+        </svg>
+        <svg id="ticket" viewBox="0 0 320 220" aria-label="Boleto de museo" style="display:none; margin-top:12px;">
+          <defs>
+            <linearGradient id="ticketGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#ffe9b5"/>
+              <stop offset="100%" stop-color="#ffc766"/>
+            </linearGradient>
+            <pattern id="ticketPattern" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+              <path d="M0 8 L8 0" stroke="#f2b44c" stroke-width="1"/>
+            </pattern>
+          </defs>
+          <rect x="22" y="40" width="276" height="140" rx="20" fill="url(#ticketGrad)" stroke="#111" stroke-width="4"/>
+          <rect x="34" y="52" width="252" height="116" rx="14" fill="url(#ticketPattern)" opacity="0.18"/>
+          <circle cx="58" cy="110" r="12" fill="#111"/>
+          <circle cx="262" cy="110" r="12" fill="#111"/>
+          <text x="160" y="100" text-anchor="middle" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="26" font-weight="700" fill="#111">
+            MUSEO
+          </text>
+          <text x="160" y="126" text-anchor="middle" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#111">
+            Entrada especial
+          </text>
+          <text x="160" y="148" text-anchor="middle" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" letter-spacing="3" fill="#111">
+            RUTA · DE · ARTE
+          </text>
+        </svg>
+
+        <div class="confetti" id="confetti"></div>
+      </div>
+      <div style="height:14px"></div>
+      <div class="row">
+        <button class="btnPrimary" id="catchBtn">Atrapar</button>
+        <span id="status" class="muted">0/5 atrapados</span>
+        <span id="ok" class="check" style="display:none"><span class="dot"></span>¡Listo! Esta pieza está atrapada.</span>
+      </div>
+      <div class="footer">Comparte esta página en tu museo/galería. Minimalista, accesible y lista para móvil.</div>
+    </section>
+  </main>
+
+
+<script>
+  const GOAL = 5;
+  const urlParams = new URLSearchParams(location.search);
+  const QR_ID = urlParams.get('id') || 'demo1'; // <-- usa ids distintos ?id=1..5 en cada QR
+
+  const stage = document.getElementById('stage');
+  const mascot = document.getElementById('mascot');
+  const ticket = document.getElementById('ticket');
+  const confettiEl = document.getElementById('confetti');
+  const statusEl = document.getElementById('status');   // mostrará PROGRESO GLOBAL
+  const ok = document.getElementById('ok');
+  const catchBtn = document.getElementById('catchBtn');
+  const btnInfo = document.getElementById('btnInfo');
+
+  // Persistencia en el dispositivo
+  const keySet = 'arte_captured_set';
+  let captured = new Set(JSON.parse(localStorage.getItem(keySet) || '[]'));
+
+  function save(){
+    localStorage.setItem(keySet, JSON.stringify(Array.from(captured)));
+  }
+
+  function burst(x, y){
+    for(let i=0;i<50;i++){
+      const s=document.createElement('span');
+      s.style.left = (x + (Math.random()*120-60)) + 'px';
+      s.style.top  = (y + (Math.random()*60-30)) + 'px';
+      s.style.background = `hsl(${Math.floor(Math.random()*360)}, 90%, 55%)`;
+      s.style.animationDelay = (Math.random()*160) + 'ms';
+      confettiEl.appendChild(s);
+      setTimeout(()=> s.remove(), 1200);
+    }
+  }
+
+  function moveMascot(){
+    const dx = (Math.random()*40 - 20);
+    const dy = (Math.random()*40 - 20);
+    mascot.style.transition = 'transform 180ms ease';
+    mascot.style.transform = `translate(${dx}px, ${dy}px)`;
+    setTimeout(()=> mascot.style.transform = 'translate(0,0)', 220);
+  }
+
+  function updateStatus(){
+    // PROGRESO GLOBAL en el panel de "Atrapar"
+    statusEl.textContent = `Progreso global: ${captured.size}/${GOAL}`;
+
+    if(captured.size >= GOAL){
+      ok.style.display = 'inline-flex';
+      stage.classList.add('done');
+      if (mascot) mascot.style.display = 'none';
+      if (ticket) ticket.style.display = 'block';
+    }else{
+      ok.style.display = 'none';
+      stage.classList.remove('done');
+      if (mascot) mascot.style.display = 'block';
+      if (ticket) ticket.style.display = 'none';
+    }
+  }
+
+  function markCaught(fromEl){
+    // 1 captura por QR
+    if (captured.has(QR_ID)) {
+      alert('Este QR ya fue atrapado. Busca otros puntos del campus.');
+      return;
+    }
+    captured.add(QR_ID);
+    save();
+    updateStatus();
+    const r = fromEl.getBoundingClientRect();
+    burst(r.width/2, r.height/2);
+    if (captured.size < GOAL) {
+      moveMascot();
+    }
+  }
+
+  mascot.addEventListener('click', ()=> markCaught(mascot));
+  catchBtn.addEventListener('click', ()=> markCaught(stage));
+  btnInfo.addEventListener('click', ()=>{
+    alert('Recorre la universidad y busca los 5 QR con la mascota rompecabezas. Cada QR cuenta una sola vez. Completa 5 para ganar tu entrada.');
+  });
+
+  updateStatus();
+</script>
+
+</body>
+</html>
